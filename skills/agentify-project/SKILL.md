@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "0.1"
+  version: "0.2"
 ---
 
 # Agentify project
@@ -85,10 +85,11 @@ and `/memory-doctor`.
 X / new doc Y, applying the keep-vs-extract test (target-structure §1); where a block's relevance
 is verifiable from the codebase, check the code instead of asking. Present the mapping with
 obvious calls pre-decided; walk **only doubtful blocks** as individual questions, each with a
-recommendation; one approval gate before any edit. Offer a compaction pass on blocks that stay;
-write extracted docs compact from birth — via `compact-docs-writer` when installed, else inline
-with its core principle (least text, zero information loss). Each extracted doc gets a plain-link
-index entry in AGENTS.md with its "read when…" hook.
+recommendation, worded via `explain-in-simple-language` when available; one approval gate before
+any edit. Offer a compaction pass on blocks that stay; write extracted docs compact from birth —
+via `compact-docs-writer` when installed, else inline with its core principle (least text, zero
+information loss). Each extracted doc gets a plain-link index entry in AGENTS.md with its "read
+when…" hook.
 
 **Skills.** Move real dirs, create relative symlinks (committed), per matrix; leave
 foreign/personal links untouched and report them.
