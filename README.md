@@ -236,6 +236,10 @@ flowchart TD
   split -. when available .-> simple
   execute -. when available .-> simple
   compact -. when available .-> simple
+  memory_doctor -. when available .-> simple
+  agentify["agentify-project"] -. when available .-> simple
+  self_review -. when available .-> simple
+  agentify -. when available .-> compact_docs
 
   self_rule["self-improve-on-correction rule"] --> self["self-improve"]
   self --> compact["compact-skill-creator"]

@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "0.10"
+  version: "0.11"
 ---
 
 # Self-review
@@ -101,11 +101,12 @@ Before the first finding, check which planning documents the task has (ticket, r
 plan) and read any that exist: recommendations must weigh the full story. These documents still
 never reach the reviewer, which sees only the distilled intent (Review above).
 
-One finding at a time, recommending a disposition with a one-line why — the author decides, and
-discussing the finding is offered as visibly as the dispositions themselves, never left an implicit
-escape hatch. Anything the author says that isn't a disposition is discussion, not a decision:
-answer the question, check the code, revise the recommendation, do what they ask with the finding —
-then the walk returns to that same finding, still open. Three dispositions close one:
+One finding at a time, recommending a disposition with a one-line why, worded via
+`explain-in-simple-language` when available — the author decides, and discussing the finding is
+offered as visibly as the dispositions themselves, never left an implicit escape hatch. Anything
+the author says that isn't a disposition is discussion, not a decision: answer the question, check
+the code, revise the recommendation, do what they ask with the finding — then the walk returns to
+that same finding, still open. Three dispositions close one:
 
 - **fix** — apply it to the working tree now; committing stays the author's move. Submission
   metadata (PR title, description, commit subjects) the agent only drafts — applying it is the

@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "1.6"
+  version: "1.7"
 ---
 
 # Memory doctor
@@ -58,6 +58,7 @@ flat file with no index, treat each section as a block.
    Never drop an option because it seems not to apply; the user must never have to type a standard
    option by hand. Record each confirmed choice and move straight to the next block — **act on
    nothing yet**; never skip a block or record a choice without its own explicit confirmation.
+   Word each question via `explain-in-simple-language` when available.
 4. **Execute, once every block is decided.** Apply the recorded actions in index order, honoring the
    Safety rules below (relocate-before-delete, honest index). Doing all the work in one pass —
    never interleaved with the questions — keeps the decision phase a fast, uninterrupted Q&A.
