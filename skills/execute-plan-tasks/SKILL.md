@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "0.2"
+  version: "0.3"
 ---
 
 # Execute plan tasks
@@ -34,9 +34,9 @@ Done when the chosen task, its steps, its acceptance criteria and its dependency
   refactors. Work the plan calls for that no task covers → report it, don't absorb it.
 - The plan's conventions and overrides bind every task, this one included.
 - **Never guess.** What the code settles, settle by reading it; what it doesn't goes to the user as
-  one question carrying your recommendation. Append each settled deviation from the plan, and its
-  why, as one line to the decisions log beside the plan (`<slug>.DECISIONS.md`), creating it if
-  absent.
+  one question carrying your recommendation, worded via `explain-in-simple-language` when
+  available. Append each settled deviation from the plan, and its why, as one line to the
+  decisions log beside the plan (`<slug>.DECISIONS.md`), creating it if absent.
 - **A copy is not exempt.** A file the plan says to copy or mirror was written for its own
   runtime and tooling: check each setting fits this task's target before copying. A misfit is a
   deviation — settle and log it as above.

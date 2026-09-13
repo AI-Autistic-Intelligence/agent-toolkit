@@ -4,7 +4,7 @@ description: Author or refine a skill for maximum token economy without losing i
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 license: MIT
 metadata:
-  version: "1.19"
+  version: "1.20"
 ---
 
 # Compact skill creator
@@ -119,9 +119,10 @@ disclosed doc).
    branch of the skill's design tree, resolving dependencies between decisions one at a time —
    never fire a fixed batch of questions once and then draft. Cover at least the purpose, **trigger
    type**, and any unavoidable coupling, plus whatever each answer opens up. Ask one question at a
-   time, each with your recommended answer; if a question can be answered by exploring the codebase,
-   explore instead of asking. Scale depth to complexity (complex skill → more questions; simple →
-   few). The only limit: never interview for its own sake.
+   time, each with your recommended answer, worded via `explain-in-simple-language` when
+   available; if a question can be answered by exploring the codebase, explore instead of asking.
+   Scale depth to complexity (complex skill → more questions; simple → few). The only limit: never
+   interview for its own sake.
 3. **Metadata.** Always include the frontmatter fields; never hardcode their values. Creating: infer
    defaults from context (sibling `SKILL.md` files, `git config user.name`, repo `LICENSE`), ask the
    user to confirm or override. Version starts at `"1.0"`, or `"0.x"` when the author wants a trial

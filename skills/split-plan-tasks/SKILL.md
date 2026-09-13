@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "0.3"
+  version: "0.4"
 ---
 
 # Split plan into tasks
@@ -45,8 +45,8 @@ Done when the plan is read and, where a section already existed, the user has ch
   one, and no task invents work the plan doesn't call for.
 
 Present the whole breakdown with the obvious calls already decided, and walk only the genuinely
-doubtful boundaries as individual questions, each carrying your recommendation. One approval gate
-before writing anything.
+doubtful boundaries as individual questions, each carrying your recommendation, worded via
+`explain-in-simple-language` when available. One approval gate before writing anything.
 
 Done when every step and criterion is placed, the first group is exercisable or you've said why
 not, and the user has approved the breakdown.

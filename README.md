@@ -105,7 +105,7 @@ Wording for what the agent writes to people, whether the user in the session or 
   without dumbing them down or hiding that an agent wrote them.
 - **[use-conversational-language](./skills/use-conversational-language/SKILL.md)** — the voice for
   text that should read as if a person typed it, used by the review skills for comments and
-  replies and by rules for user-facing texts and code comments.
+  replies and by rules for texts other people read and code comments.
 
 ### Code checks
 
@@ -233,6 +233,9 @@ flowchart TD
   plan -. when available .-> simple
   refine_pr -. when available .-> simple
   verify_understanding -. when available .-> simple
+  split -. when available .-> simple
+  execute -. when available .-> simple
+  compact -. when available .-> simple
 
   self_rule["self-improve-on-correction rule"] --> self["self-improve"]
   self --> compact["compact-skill-creator"]

@@ -33,7 +33,8 @@ on the page. Only the ANSWERS table's own row numbers stay, for in-file cross-re
 Read the code behind each comment first: verify its premise against the current codebase, never
 judging from the quoted hunk alone. Then form a recommendation — verdict, reasoning, and (for
 partial and push back) a draft reply. Nothing is decided silently, and every question to the
-user is worded via `explain-in-simple-language` when available:
+user is worded via `explain-in-simple-language` when available, the draft reply it carries
+excepted:
 
 - **Contentious ones one at a time**: every comment recommended partial or push back, or
   uncertain, is its own question carrying recommendation, reasoning, and draft reply.

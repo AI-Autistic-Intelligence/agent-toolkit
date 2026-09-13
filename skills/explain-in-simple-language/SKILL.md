@@ -32,8 +32,8 @@ just walked up to your desk understand this?
 - **Structure.** One idea per sentence, one point per paragraph. Concrete case before general
   mechanism.
 - **Depth.** Answer what was asked, at the depth it was asked, then stop: no history, alternatives,
-  or adjacent facts unless the answer can't stand without them. Prefer brevity, never at the
-  expense of clarity:
+  or adjacent facts unless the answer can't stand without them or whatever asked for the text
+  requires them. Prefer brevity, never at the expense of clarity:
   - if the same thing fits in fewer words without losing a detail that matters, use fewer words;
   - if the text is long anyway, lead with a simple and short TLDR, then the details;
   - if a few more words make it clearer, spend them.
@@ -47,6 +47,5 @@ just walked up to your desk understand this?
 ## Not about voice
 
 AI traits are neither hidden nor encouraged: dashes, polish, and elegance are fine while the text
-stays easy to understand. `use-conversational-language` governs the voice of text other people
-read as if the user typed it (PR comments, commits, chat with colleagues); this skill governs what
-the user reads in the session. The two never apply to the same text.
+stays easy to understand. Text other people read as if the user typed it (PR comments, commits,
+chat with colleagues) is out of scope and keeps its own voice.
