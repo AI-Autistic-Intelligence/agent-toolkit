@@ -1009,8 +1009,6 @@ case_marker_write_fails() {
   rm -f "${STATE}/opt-out"
 }
 
-# Every other registering case goes through install.sh, and the rules installer
-# has its own target check.
 case_excluded_skill_stays_out() {
   detect_claude
   install_skills
@@ -1071,6 +1069,66 @@ case_exclude_name_checked() {
   assert_exclude_refused --exclude handover --exclude ''
 }
 
+# Like link_one, --exclude leaves an entry it does not own alone until --force.
+case_excluded_copy_needs_force() {
+  detect_claude
+  install_skills
+  rm "${HOME}/.claude/skills/handover"
+  mkdir "${HOME}/.claude/skills/handover"
+  install_skills --exclude handover
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_contains "installer output" "$OUT" "remove handover (excluded)"
+  assert_contains "installer output" "$OUT" "skip   handover (excluded, but not ours"
+  assert_entry_missing "${HOME}/.agents/skills/handover"
+  [ -d "${HOME}/.claude/skills/handover" ] || fail "the copy went without --force"
+
+  install_skills --force
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_contains "installer output" "$OUT" "remove handover (excluded)"
+  assert_entry_missing "${HOME}/.claude/skills/handover"
+}
+
+# A hand-edited file: comments, spaces and CRLF read fine, and a run that
+# changes nothing leaves the file as it was.
+case_exclusions_file_hand_edited() {
+  detect_claude
+  install_skills
+  printf '# mine\r\n  handover \r\n' >"${HOME}/.agents/excluded-skills"
+  install_skills
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_contains "installer output" "$OUT" "remove handover (excluded)"
+  assert_entry_missing "${HOME}/.agents/skills/handover"
+  assert_entry_missing "${HOME}/.claude/skills/handover"
+  assert_eq "file left alone" "$(printf '# mine\r\n  handover \r\n')" \
+    "$(cat "${HOME}/.agents/excluded-skills")"
+
+  install_skills --include handover
+  assert_link "${HOME}/.claude/skills/handover"
+  assert_file_missing "${HOME}/.agents/excluded-skills"
+}
+
+# The warning fires only when this run changed the set and could not save it.
+case_exclusions_write_fails() {
+  detect_claude
+  install_skills --exclude handover
+  chmod 500 "${HOME}/.agents"
+  install_skills --include handover
+  chmod 700 "${HOME}/.agents"
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_contains "installer output" "$OUT" "could not update"
+  assert_link "${HOME}/.claude/skills/handover"
+  assert_eq "file kept" "handover" "$(cat "${HOME}/.agents/excluded-skills")"
+
+  chmod 500 "${HOME}/.agents"
+  install_skills
+  chmod 700 "${HOME}/.agents"
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_not_contains "installer output" "$OUT" "could not update"
+  assert_entry_missing "${HOME}/.claude/skills/handover"
+}
+
+# Every other registering case goes through install.sh, and the rules installer
+# has its own target check.
 case_rules_installer_registers() {
   detect_claude
   install_rules
@@ -1695,6 +1753,9 @@ opt_out_from_other_target
 marker_write_fails
 excluded_skill_stays_out
 exclude_name_checked
+excluded_copy_needs_force
+exclusions_file_hand_edited
+exclusions_write_fails
 rules_installer_registers
 claude_not_detected
 git_unusable

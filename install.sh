@@ -32,6 +32,11 @@
 #   --auto-update      Register it again after --no-auto-update
 #   -h, --help         Show this help
 #
+# Every skill is installed by default. --exclude is repeatable, covers every
+# skills dir wired from <agents-dir>, and is remembered in
+# <agents-dir>/excluded-skills, so the daily self-update honours it instead of
+# putting the skill back.
+#
 # When Claude Code is detected, this also registers a hook that fast-forwards
 # this clone once a day and re-runs the installers: docs/auto-update.md.
 
@@ -85,9 +90,10 @@ Options:
   --auto-update      Register it again after --no-auto-update
   -h, --help         Show this help
 
-Every skill is installed by default. --exclude is repeatable and is
-remembered in <agents-dir>/excluded-skills, so the daily self-update honours
-it instead of putting the skill back.
+Every skill is installed by default. --exclude is repeatable, covers every
+skills dir wired from <agents-dir>, and is remembered in
+<agents-dir>/excluded-skills, so the daily self-update honours it instead of
+putting the skill back.
 
 When Claude Code is detected, this also registers a hook that fast-forwards
 this clone once a day and re-runs the installers: docs/auto-update.md.
@@ -133,7 +139,7 @@ done
 for name in ${EXCLUDE_DEL[@]+"${EXCLUDE_DEL[@]}"}; do
   exclude_remove "$name"
 done
-save_exclusions || echo "Warning: could not write ${EXCLUDE_FILE}; the exclusions apply to this run only." >&2
+save_exclusions || echo "Warning: could not update ${EXCLUDE_FILE}; the --exclude/--include given here hold for this run only." >&2
 
 # Phase 1: populate the agent-neutral dir with links into the repo.
 # Pruning the agents dir first breaks downstream agent links for removed

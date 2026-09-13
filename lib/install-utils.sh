@@ -105,16 +105,20 @@ is_ours() {
 # choice has to live where the replay finds it on its own.
 EXCLUDE_FILE=""
 EXCLUDED=""
+EXCLUDED_LOADED=""
 
 load_exclusions() {
   local line
   EXCLUDE_FILE="${AGENTS_DIR}/$1"
   EXCLUDED=""
-  [ -f "$EXCLUDE_FILE" ] || return 0
-  while IFS= read -r line || [ -n "$line" ]; do
-    case "$line" in ''|'#'*) continue ;; esac
-    EXCLUDED="${EXCLUDED}${line}"$'\n'
-  done <"$EXCLUDE_FILE"
+  if [ -f "$EXCLUDE_FILE" ]; then
+    # IFS trims stray spaces and a CR, so a hand-edited file still matches.
+    while IFS=$' \t\r' read -r line || [ -n "$line" ]; do
+      case "$line" in ''|'#'*) continue ;; esac
+      EXCLUDED="${EXCLUDED}${line}"$'\n'
+    done <"$EXCLUDE_FILE"
+  fi
+  EXCLUDED_LOADED="$EXCLUDED"
 }
 
 is_excluded() {
@@ -140,24 +144,37 @@ exclude_remove() {
   EXCLUDED="$kept"
 }
 
+# Skipped when this run left the set as loaded, so a hand-edited file stays as
+# it was, comments included, and a read-only dir only complains when there is
+# something to save.
 save_exclusions() {
   local tmp="${EXCLUDE_FILE}.tmp.$$"
   [ -n "$EXCLUDE_FILE" ] || return 1
+  [ "$EXCLUDED" != "$EXCLUDED_LOADED" ] || return 0
   if [ -z "$EXCLUDED" ]; then
     rm -f -- "$EXCLUDE_FILE" 2>/dev/null
-    return 0
+    return
   fi
   printf '%s' "$EXCLUDED" >"$tmp" 2>/dev/null || return 1
   mv -f "$tmp" "$EXCLUDE_FILE"
 }
 
-# Drop the entry an excluded name holds in directory $2, if it is one of ours.
-# A copy left by an environment that cannot link is not, so it stays: removing
-# a real directory is what --force is for.
+# Drop the entry an excluded name holds in directory $2. A link of ours goes as
+# is; a copy or a foreign entry stays put unless --force, same as link_one.
 unlink_one() {
   local name="$1" dest="$2/$1"
-  { [ -L "$dest" ] && is_ours "$dest"; } || return 0
-  rm -- "$dest"
+  if [ -L "$dest" ] && is_ours "$dest"; then
+    rm -- "$dest"
+  elif [ -e "$dest" ] || [ -L "$dest" ]; then
+    if [ "$FORCE" -ne 1 ]; then
+      echo "  skip   ${name} (excluded, but not ours; use --force to remove it)"
+      EXISTING_SKIPPED=$((EXISTING_SKIPPED + 1))
+      return 0
+    fi
+    rm -rf -- "$dest"
+  else
+    return 0
+  fi
   echo "  remove ${name} (excluded)"
 }
 

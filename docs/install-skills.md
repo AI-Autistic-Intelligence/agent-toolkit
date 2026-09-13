@@ -46,7 +46,9 @@ Options:
 ```
 
 `--exclude` is repeatable and remembered in `<agents-dir>/excluded-skills`, so the daily update
-keeps the skill out instead of putting it back; `--include` undoes it.
+keeps the skill out instead of putting it back; `--include` undoes it. The choice covers every
+skills dir wired from that agents dir, and an entry the installer does not own (a copy, a foreign
+link) stays until you pass `--force`.
 
 You can also skip the script and symlink just the ones you want by hand, through the same two
 layers:

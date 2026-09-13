@@ -12,7 +12,7 @@ installed; their `runs/` output dirs are gitignored. Planning documents go in `.
 ## Docs
 
 - [docs/authoring-conventions.md](docs/authoring-conventions.md) — read before editing any skill,
-  rule, doc or manifest.
+  rule, doc, manifest or install script.
 - [docs/core-philosophy.md](docs/core-philosophy.md) — the five pillars and their litmus test;
   read before creating or redesigning a skill, or when brainstorming toolkit direction.
 - [docs/contributor-setup.md](docs/contributor-setup.md) — how this repo is wired for agents; read
