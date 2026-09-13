@@ -20,7 +20,8 @@ thing it said.
   log.
 - Never `--force`, so an entry the installers do not own is never replaced.
 - It does replay the installers, so an update can add skills and rules, or drop ones the repo
-  removed. Rules are always-on, so that changes how your agent behaves.
+  removed; a skill excluded with `--exclude` stays out. Rules are always-on, so that changes how
+  your agent behaves.
 
 That last point is what to weigh against
 [pillar 3](./core-philosophy.md#pillar-3-human-in-the-loop). It stays on by default because the

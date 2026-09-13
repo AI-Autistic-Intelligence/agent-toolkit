@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Review ticket
@@ -144,8 +144,8 @@ scope, the question converts to a handoff.
    A handoff uses the same block format, `### Handoff · <short label>` in place of the number.
    Actually invoke [use-conversational-language](../use-conversational-language/SKILL.md) and
    follow it before writing the questions or handoff messages — reciting its rules from memory
-   does not count; runs with neither skip it. Not installed: write plain prose instead, no dashes and no AI tells. When nothing survived, print only the verdict line
-   plus any handoffs.
+   does not count; runs with neither skip it. Not installed: write plain prose instead, no dashes
+   and no AI tells. When nothing survived, print only the verdict line plus any handoffs.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

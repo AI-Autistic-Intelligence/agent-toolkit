@@ -3,7 +3,7 @@ name: handover
 description: Use when handing finished work over to code review — writing a PR description or packaging a change for review by a human, an agent, or both.
 license: MIT
 metadata:
-  version: "0.6"
+  version: "0.7"
 ---
 
 # Handover

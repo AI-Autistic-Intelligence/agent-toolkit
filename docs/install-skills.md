@@ -38,10 +38,15 @@ Options:
 ./install.sh --agents-dir DIR        # custom agent-neutral location (default: ~/.agents)
 ./install.sh --skills-dir DIR        # agent skills dir to wire (e.g. a project's .claude/skills)
 ./install.sh --force                 # overwrite real files/dirs and foreign symlinks
+./install.sh --exclude NAME          # skip this skill and remove our link to it (persists)
+./install.sh --include NAME          # install it again after --exclude
 ./install.sh --no-auto-update        # do not register the daily self-update hook (persists)
 ./install.sh --auto-update           # register it again after --no-auto-update
 ./install.sh --help
 ```
+
+`--exclude` is repeatable and remembered in `<agents-dir>/excluded-skills`, so the daily update
+keeps the skill out instead of putting it back; `--include` undoes it.
 
 You can also skip the script and symlink just the ones you want by hand, through the same two
 layers:

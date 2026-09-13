@@ -126,6 +126,11 @@ assert_file_missing() {
   if [ -e "$1" ]; then fail "expected $1 to be gone"; fi
 }
 
+# Unlike assert_file_missing, a dangling symlink counts as still there.
+assert_entry_missing() {
+  if [ -e "$1" ] || [ -L "$1" ]; then fail "expected no entry at $1"; fi
+}
+
 # A hook that dies on line 1 satisfies any assertion about what is absent. The
 # stamp is the cheapest proof a run got past the throttle.
 assert_ran() {
@@ -1006,6 +1011,66 @@ case_marker_write_fails() {
 
 # Every other registering case goes through install.sh, and the rules installer
 # has its own target check.
+case_excluded_skill_stays_out() {
+  detect_claude
+  install_skills
+  install_skills --exclude handover
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_contains "installer output" "$OUT" "remove handover (excluded)"
+  assert_not_contains "installer output" "$OUT" "prune  handover"
+  assert_entry_missing "${HOME}/.agents/skills/handover"
+  assert_entry_missing "${HOME}/.claude/skills/handover"
+  assert_eq "exclusions file" "handover" "$(cat "${HOME}/.agents/excluded-skills")"
+
+  install_skills
+  assert_entry_missing "${HOME}/.agents/skills/handover"
+  assert_entry_missing "${HOME}/.claude/skills/handover"
+
+  push_skill zz-harness-skill
+  make_due
+  local out
+  out="$(run_hook)"
+  assert_stdout_is '{}' "$out"
+  assert_link "${HOME}/.agents/skills/zz-harness-skill"
+  assert_link "${HOME}/.claude/skills/zz-harness-skill"
+  assert_entry_missing "${HOME}/.agents/skills/handover"
+  assert_entry_missing "${HOME}/.claude/skills/handover"
+
+  install_skills --include handover
+  assert_link "${HOME}/.agents/skills/handover"
+  assert_link "${HOME}/.claude/skills/handover"
+  assert_file_missing "${HOME}/.agents/excluded-skills"
+}
+
+# A refused run prints one line naming the option and changes nothing.
+assert_exclude_refused() {
+  install_skills "$@"
+  [ "$INSTALL_RC" -ne 0 ] || fail "install.sh $* was not refused"
+  assert_contains "refusal" "$OUT" "$1"
+  assert_eq "lines printed for install.sh $*" "1" "$(printf '%s\n' "$OUT" | wc -l | tr -d ' ')"
+  assert_link "${HOME}/.agents/skills/handover"
+  assert_link "${HOME}/.claude/skills/handover"
+  assert_eq "exclusions file after install.sh $*" "no-such-skill" \
+    "$(cat "${HOME}/.agents/excluded-skills")"
+}
+
+case_exclude_name_checked() {
+  detect_claude
+  install_skills
+  install_skills --exclude no-such-skill
+  assert_eq "installer exit code" "0" "$INSTALL_RC"
+  assert_contains "installer output" "$OUT" "no skill named no-such-skill"
+  assert_eq "exclusions file" "no-such-skill" "$(cat "${HOME}/.agents/excluded-skills")"
+
+  assert_exclude_refused --exclude
+  assert_exclude_refused --include
+  assert_exclude_refused --exclude ''
+  assert_exclude_refused --exclude --force
+  assert_exclude_refused --exclude $'a\nb'
+  assert_exclude_refused --exclude '#handover'
+  assert_exclude_refused --exclude handover --exclude ''
+}
+
 case_rules_installer_registers() {
   detect_claude
   install_rules
@@ -1628,6 +1693,8 @@ opt_out_and_back_in
 opt_out_without_git
 opt_out_from_other_target
 marker_write_fails
+excluded_skill_stays_out
+exclude_name_checked
 rules_installer_registers
 claude_not_detected
 git_unusable

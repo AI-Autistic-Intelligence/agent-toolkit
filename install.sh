@@ -95,6 +95,16 @@ EOF
   exit "${1:-0}"
 }
 
+# Names are stored one per line and read back next run, so only a plain
+# directory name survives the round trip (no separators, no '#' comment marker).
+require_skill_name() {
+  [ $# -ge 2 ] || { echo "$1 needs a skill name." >&2; exit 1; }
+  case "$2" in
+    ''|-*|*[!A-Za-z0-9._-]*)
+      echo "$1: invalid skill name $(printf '%q' "$2")" >&2; exit 1 ;;
+  esac
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --agents-dir) AGENTS_DIR="$2"; shift 2 ;;
@@ -105,8 +115,8 @@ while [ $# -gt 0 ]; do
       echo "install.sh installs skills only; for the rules run ./install-opinionated-rules.sh instead." >&2
       exit 1 ;;
     --force) FORCE=1; shift ;;
-    --exclude) EXCLUDE_ADD+=("$2"); shift 2 ;;
-    --include) EXCLUDE_DEL+=("$2"); shift 2 ;;
+    --exclude) require_skill_name "$@"; EXCLUDE_ADD+=("$2"); shift 2 ;;
+    --include) require_skill_name "$@"; EXCLUDE_DEL+=("$2"); shift 2 ;;
     --no-auto-update) AUTO_UPDATE=off; shift ;;
     --auto-update) AUTO_UPDATE=on; shift ;;
     -h|--help) usage 0 ;;
