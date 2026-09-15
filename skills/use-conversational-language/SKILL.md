@@ -3,7 +3,7 @@ name: use-conversational-language
 description: Voice rules for text published under a person's name and read as if a person typed it, such as chat replies, PR comments and descriptions, commit messages, review replies, and code comments. Defines the wording only, never the content.
 license: MIT
 metadata:
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Use conversational language
@@ -78,6 +78,15 @@ backticks where they render (e.g. GitHub PR comments), never where they'd show l
 - Partial: what you did and what you kept and why ("extracted the helper, kept the name since it
   matches Y").
 - Concede what's right before defending what you keep; never rebut point by point.
+
+**Reporting back** (a peer asked you to check something, e.g. "is this a bug?"):
+
+- Open with what you looked into and the verdict ("hey, I looked into the quotes thing and it's
+  expected"): naming what you checked is the natural opener here, not process narration.
+- Then the reason in one or two plain sentences: the mechanism only, never a worked example of what
+  would go wrong otherwise, nor steps for them to verify it themselves.
+- Close on the verdict in one short line ("so all good, nothing to fix"): it's the answer, not a
+  sign-off.
 
 **Explaining something** (a longer chat message walking a peer through a why or how):
 
