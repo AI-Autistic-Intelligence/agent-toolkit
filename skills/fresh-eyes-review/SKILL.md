@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Fresh-eyes review
@@ -42,7 +42,10 @@ artifacts.
    prompt, free to read any surrounding project material — except the paths the prompt lists as
    excluded: any exclusions the invocation supplies, plus, when this session authored the change,
    session-authored files that are not part of it (plans, notes, scratch), since a fresh context
-   cannot tell them apart. Its mandate, unless the invocation redirects it (e.g. security only):
+   cannot tell them apart. It writes nothing into the project: every run it makes (tests, probes)
+   disables or redirects to scratch space its side outputs (coverage, reports, snapshots), which
+   tooling writes in-tree by default. Its mandate, unless the invocation redirects it (e.g.
+   security only):
    regressions and correctness, including contradictions with surrounding code, rules, or docs —
    though matching surrounding code is not correctness: verify any pattern the change extends or
    mirrors is itself sound, since completing a broken rollout inherits its breakage; ambiguities
@@ -59,7 +62,8 @@ artifacts.
    pre-existing anomaly in the mechanism the change touches is a reason to audit it. If the harness
    cannot isolate a context, fall back to an adversarial pass over the same inputs in the main
    session. Done when an isolated reviewer has returned its findings, or the fallback pass ran and
-   its result is flagged as same-context (weaker).
+   its result is flagged as same-context (weaker) — and the project, compared with its state
+   before the review, holds nothing the review wrote: created files removed, modified ones reported.
 4. **Report back.** Relay every finding intact — location and failure scenario included — plus
    whatever else the reviewer was instructed to return; add the session's own assessment when
    useful, but never silently drop or soften a finding. What to do with the findings is the
