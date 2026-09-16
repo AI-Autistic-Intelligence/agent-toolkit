@@ -49,9 +49,9 @@ _Original filename: image.png_
 [attachment-2.pdf](attachment-2.pdf) — _Original filename: design-spec.pdf_
 ```
 
-For a file that couldn't be downloaded, append its source so the user can fetch it manually: `— not
-downloaded; get it from <url> and save here as attachment-<N>.<ext>`, adding `, or paste it and run
-/attach-to-ticket` when that skill is installed.
+For a file that couldn't be downloaded, append its source so the user can fetch it manually:
+`— not downloaded; get it from <url> and save here as <filename>`, adding
+`, or paste it (or its saved path) and run /attach-to-ticket` when that skill is installed.
 
 ## Design references
 
