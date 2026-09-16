@@ -50,7 +50,8 @@ _Original filename: image.png_
 ```
 
 For a file that couldn't be downloaded, append its source so the user can fetch it manually: `— not
-downloaded; get it from <url> and save here as attachment-<N>.<ext>`.
+downloaded; get it from <url> and save here as attachment-<N>.<ext>`, adding `, or paste it and run
+/attach-to-ticket` when that skill is installed.
 
 ## Design references
 

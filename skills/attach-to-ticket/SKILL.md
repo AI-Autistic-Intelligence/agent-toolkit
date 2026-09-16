@@ -1,0 +1,63 @@
+---
+name: attach-to-ticket
+description: Attach pasted images, files or URLs to a fetched ticket, saved beside its ticket file and referenced from it, or fill an attachment the fetch could not download. Local only, never the tracker.
+license: MIT
+metadata:
+  version: "0.1"
+---
+
+# Attach to ticket
+
+Save assets — pasted images, local files, URLs — into a ticket's planning directory and reference
+them from its ticket file, so a fresh session picks them up. **Local only** — never read or write
+the tracker; edit nothing in the document beyond the entries below.
+
+## Your task
+
+1. **Collect the assets.** The images pasted with the invocation, plus paths and URLs in its text;
+   images pasted earlier only when the user points at them. Nothing pasted or pointed at → ask
+   which, listing the images seen in the session.
+2. **Resolve the ticket.** Named in the argument or already in the session (fetched, read,
+   discussed) → proceed. Otherwise guess (branch name, latest planning directory) and confirm
+   before writing; nothing to guess from → ask. No planning directory for it yet → stop and point
+   to fetch-ticket; don't create one.
+3. **Pick the document** — unless the user names one: the ticket file, latest `-vN` when
+   re-fetched, the `<id>-` one in a shared directory; the REQUIREMENTS file when no ticket file
+   exists. Several candidates left → ask.
+4. **Map assets to entries.** Descriptions map to assets in paste order; "image 2 is …" overrides.
+   If the document has entries marked not downloaded (attachments or design references), propose
+   which asset fills which — by original filename and what the image shows — and confirm, unless
+   the user's text already says. An asset with no description → ask what it shows, recommending a
+   caption read off the image; never write one silently.
+5. **Save to disk** — see Sources; never route bytes through the model (output caps truncate base64
+   silently). Filling an entry → its filename; else the next `attachment-<N>.<ext>` after the
+   highest N in the document or on disk (`<id>-attachment-<N>` in a shared directory). Either way
+   the extension follows the actual file type; never overwrite a valid file. Verify: non-empty,
+   type trailer present (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), then view the saved file and
+   confirm it is the asset given.
+6. **Write the entries.** Filling an entry: keep it, drop its not-downloaded note, fix the embed's
+   extension when it changed, add the caption line below — one entry per file, never a second.
+   Else append to `## Attachments` (create it when missing — last, or before
+   `## Design references`):
+
+   ```markdown
+   ### Attachment 3
+
+   ![attachment-3](attachment-3.png)
+   _<description> — added by hand YYYY-MM-DD_
+   ```
+
+   Non-image → `[attachment-3.pdf](attachment-3.pdf) — _<description> — added by hand YYYY-MM-DD_`.
+7. **Report** project-relative paths: the document, then one line per asset with its caption. When
+   the document is a ticket file with no REQUIREMENTS file yet and `/refine-ticket` is installed,
+   hand off with one copy-pasteable launch command in the agent tool's syntax (e.g.
+   `claude --name refine-<slug> "/refine-ticket <document>"`), then the `/clear` alternative.
+
+## Sources
+
+- **Pasted image** — the agent tool's paste cache, when it keeps one; e.g. Claude Code writes
+  `~/.claude/image-cache/$CLAUDE_CODE_SESSION_ID/<N>.png`, `<N>` the image's number in the session.
+  No cache or no such file → the OS clipboard, see [clipboard.md](clipboard.md). Neither works →
+  ask the user to save the image and paste its path.
+- **Local path** — copy the file.
+- **URL** — `curl -fSL <url> -o <file>`.
