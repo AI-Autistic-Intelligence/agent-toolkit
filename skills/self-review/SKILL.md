@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "0.11"
+  version: "0.12"
 ---
 
 # Self-review
@@ -124,6 +124,16 @@ carry forward across rounds: a re-raised finding matching a dismissed or deferre
 disposition and is not re-walked; one matching a fixed finding means the fix didn't hold — reopen it
 and walk it again, except an unapplied metadata draft: pending, not failed. The report lists each
 finding once, with its latest disposition.
+
+**Autoaccept** — the word `autoaccept`, in the invocation or said at any point of the walk, hands
+the remaining dispositions of this invocation, later rounds included, to the agent: each finding
+gets the disposition the agent would have recommended, applied as above and printed as its report
+line with the why — a dismissal with the agent's reason, a deferral as a note for the author, its
+ticket or comment text drafted in the session and the finding listed at Wrap up for filing. Only a
+fix that would reshape the change (a redesign, scope beyond the finding) still asks. Later rounds
+start at once on the working tree, the commit proposal moving to Wrap up; asks before the walk
+(target, intent) stand. The report gains a procedural caveat naming where it began
+(`Dispositions auto-accepted from round 1, finding 3`).
 
 Done when every finding of the round is dispositioned and diff and metadata re-hashed as in steps
 3 and 4.
@@ -253,7 +263,8 @@ the PR — unless the project rules file says otherwise; a reminder to run the p
 checks (build, lint, tests) before pushing — this skill never runs them; and that the pushed head
 must match the reported SHA: unpinned → commit, then re-invoke to stamp; any later commit or
 metadata edit → the same re-invocation: a stamp when the content held, its changed metadata
-reviewed alone, else a re-run. Done when all four are printed.
+reviewed alone, else a re-run; after autoaccept, also the commit proposal (Rounds) and the
+auto-deferred findings to file. Done when all are printed.
 
 ## Boundaries
 
