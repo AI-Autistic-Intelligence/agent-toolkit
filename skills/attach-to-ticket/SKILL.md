@@ -1,6 +1,6 @@
 ---
 name: attach-to-ticket
-description: Attach pasted images, files or URLs to a fetched ticket, saved beside its ticket file and referenced from it, or fill an attachment the fetch could not download. Local only, never the tracker.
+description: Attach pasted images, files or URLs to a fetched ticket, saved beside its ticket file and referenced from it, or fill an attachment the fetch could not download. Local only — never queries or edits the tracker.
 license: MIT
 metadata:
   version: "0.1"
@@ -9,8 +9,10 @@ metadata:
 # Attach to ticket
 
 Save assets — pasted images, local files, URLs — into a ticket's planning directory and reference
-them from its ticket file, so a fresh session picks them up. **Local only** — never read or write
-the tracker; edit nothing in the document beyond the entries below.
+them from its ticket file, so a fresh session picks them up. **Local only** — never query or modify
+the tracker (no API calls, no re-fetch, no comments or edits); downloading an asset URL the user
+supplies or a not-downloaded entry names is fine, tracker-hosted or not. Edit nothing in the
+documents beyond the entries below and the REQUIREMENTS line of step 6.
 
 ## Your task
 
@@ -32,9 +34,10 @@ the tracker; edit nothing in the document beyond the entries below.
 5. **Save to disk** — see Sources; never route bytes through the model (output caps truncate base64
    silently). Filling an entry → its filename; else the next `attachment-<N>.<ext>` after the
    highest N in the document or on disk (`<id>-attachment-<N>` in a shared directory). Either way
-   the extension follows the actual file type; never overwrite a valid file. Verify: non-empty,
-   type trailer present (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), then view the saved file and
-   confirm it is the asset given.
+   the extension follows the actual file type; never overwrite a valid file. Verify: non-empty;
+   type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), else
+   detected type matches the extension (`file <path>`); images and PDFs also viewed to confirm
+   they are the asset given.
 6. **Write the entries.** Filling an entry: keep it, drop its not-downloaded note, fix the embed's
    extension when it changed, add the caption line below — one entry per file, never a second.
    Else append to `## Attachments` (create it when missing — last, or before
@@ -48,9 +51,14 @@ the tracker; edit nothing in the document beyond the entries below.
    ```
 
    Non-image → `[attachment-3.pdf](attachment-3.pdf) — _<description> — added by hand YYYY-MM-DD_`.
-7. **Report** project-relative paths: the document, then one line per asset with its caption. When
-   the document is a ticket file with no REQUIREMENTS file yet and `/refine-ticket` is installed,
-   hand off with one copy-pasteable launch command in the agent tool's syntax (e.g.
+   When a REQUIREMENTS file exists for the ticket (the document's base with `.TICKET` →
+   `.REQUIREMENTS`; for a `-vN` document that base, else the ticket's latest), also append one line
+   per asset — embed or link with a project-relative path, plus the caption — at the end of its
+   **Context** part; no new section, nothing else changed.
+7. **Report** project-relative paths: the document, the REQUIREMENTS file when it got a line — its
+   requirements predate the asset and may need re-refining — then one line per asset with its
+   caption. When the document is a ticket file with no REQUIREMENTS file yet and `/refine-ticket`
+   is installed, hand off with one copy-pasteable launch command in the agent tool's syntax (e.g.
    `claude --name refine-<slug> "/refine-ticket <document>"`), then the `/clear` alternative.
 
 ## Sources
@@ -60,4 +68,5 @@ the tracker; edit nothing in the document beyond the entries below.
   No cache or no such file → the OS clipboard, see [clipboard.md](clipboard.md). Neither works →
   ask the user to save the image and paste its path.
 - **Local path** — copy the file.
-- **URL** — `curl -fSL <url> -o <file>`.
+- **URL** — `curl -fSL <url> -o <file>`; no auth flows here — on failure or a login page, ask the
+  user to download the file and paste its path.
