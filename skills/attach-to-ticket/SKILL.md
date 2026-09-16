@@ -18,7 +18,8 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
 
 1. **Collect the assets.** The images pasted with the invocation, plus paths and URLs in its text;
    images pasted earlier only when the user points at them. Nothing pasted or pointed at → ask
-   which, listing the images seen in the session.
+   which, listing the images seen in the session. Done when every supplied asset is collected or
+   dropped by the user.
 2. **Resolve the ticket.** Named in the argument or already in the session (fetched, read,
    discussed) → proceed. Otherwise guess (branch name, latest planning directory) and confirm
    before writing; nothing to guess from → ask. No planning directory for it yet → stop and point
@@ -32,14 +33,15 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    image shows — and confirm, unless the user's text already says. An asset with no description →
    ask what it shows, recommending a caption read off the image; never write one silently.
 5. **Save to disk** — see Sources; never route bytes through the model (output caps truncate base64
-   silently). Filling an entry → its filename; else the next `attachment-<N>.<ext>` after the
-   highest N in the document or on disk (`<id>-attachment-<N>` in a shared directory). Either way
-   the extension follows the actual file type; never overwrite a valid file. Verify: non-empty;
-   type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), else
-   detected type matches the extension (`file '<path>'`); images and PDFs also viewed to confirm
-   they are the asset given.
-6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, fix the embed's
-   extension when it changed, add the caption line below — one entry per file, never a second.
+   silently). Filling an entry → its filename when that is a bare name (no `/`, `\`, `..`) and not
+   a symlink, else ask; else the next `attachment-<N>.<ext>` after the highest N in the document or
+   on disk (`<id>-attachment-<N>` in a shared directory). Either way the extension follows the
+   actual file type; never overwrite a valid file. Verify: non-empty; type trailer present where
+   the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), else detected type matches the
+   extension (`file '<path>'`); images and PDFs also viewed to confirm they are the asset given.
+6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, add the embed or
+   link when missing, else fix its extension when it changed, add the caption line below — one
+   entry per file, never a second.
    Else append to `## Attachments` (create it when missing — last, or before
    `## Design references`):
 
@@ -73,5 +75,6 @@ escape again for a nested language (AppleScript, PowerShell).
   No cache or no such file → the OS clipboard, see [clipboard.md](clipboard.md). Neither works →
   ask the user to save the image and paste its path.
 - **Local path** — copy the file.
-- **URL** — `curl -fSL '<url>' -o '<file>'`; no auth flows here — on failure or a login page, ask
-  the user to download the file and paste its path.
+- **URL** — HTTP(S) only, redirects included:
+  `curl -fSL --proto '=http,https' --proto-redir '=http,https' '<url>' -o '<file>'`; no auth
+  flows here — on failure or a login page, ask the user to download the file and paste its path.
