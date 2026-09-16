@@ -63,6 +63,9 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
 
 ## Sources
 
+Shell-escape paths and URLs from user or ticket text in every command (`'` → `'\''`), and
+escape again for a nested language (AppleScript, PowerShell).
+
 - **Pasted image** — the agent tool's paste cache, when it keeps one; e.g. Claude Code writes
   `~/.claude/image-cache/$CLAUDE_CODE_SESSION_ID/<N>.png`, `<N>` the image's number in the session.
   No cache or no such file → the OS clipboard, see [clipboard.md](clipboard.md). Neither works →
