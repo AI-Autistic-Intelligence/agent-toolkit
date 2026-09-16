@@ -53,8 +53,8 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    Non-image → `[attachment-3.pdf](attachment-3.pdf) — _<description> — added by hand YYYY-MM-DD_`.
    When a REQUIREMENTS file exists for the ticket (the document's base with `.TICKET` →
    `.REQUIREMENTS`; for a `-vN` document that base, else the ticket's latest), also append one line
-   per asset — embed or link with a project-relative path, plus the caption — at the end of its
-   **Context** part; no new section, nothing else changed.
+   per asset — the same embed or link plus the caption — at the end of its **Context** part; no new
+   section, nothing else changed.
 7. **Report** project-relative paths: the document, the REQUIREMENTS file when it got a line — its
    requirements predate the asset and may need re-refining — then one line per asset with its
    caption. When the document is a ticket file with no REQUIREMENTS file yet and `/refine-ticket`
