@@ -27,10 +27,10 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    re-fetched, the `<id>-` one in a shared directory; the REQUIREMENTS file when no ticket file
    exists. Several candidates left → ask.
 4. **Map assets to entries.** Descriptions map to assets in paste order; "image 2 is …" overrides.
-   If the document has entries marked not downloaded (attachments or design references), propose
-   which asset fills which — by original filename and what the image shows — and confirm, unless
-   the user's text already says. An asset with no description → ask what it shows, recommending a
-   caption read off the image; never write one silently.
+   If the document has entries whose file is missing (attachments or design references, marked
+   not downloaded or not), propose which asset fills which — by original filename and what the
+   image shows — and confirm, unless the user's text already says. An asset with no description →
+   ask what it shows, recommending a caption read off the image; never write one silently.
 5. **Save to disk** — see Sources; never route bytes through the model (output caps truncate base64
    silently). Filling an entry → its filename; else the next `attachment-<N>.<ext>` after the
    highest N in the document or on disk (`<id>-attachment-<N>` in a shared directory). Either way
@@ -38,7 +38,7 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), else
    detected type matches the extension (`file '<path>'`); images and PDFs also viewed to confirm
    they are the asset given.
-6. **Write the entries.** Filling an entry: keep it, drop its not-downloaded note, fix the embed's
+6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, fix the embed's
    extension when it changed, add the caption line below — one entry per file, never a second.
    Else append to `## Attachments` (create it when missing — last, or before
    `## Design references`):
