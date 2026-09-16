@@ -36,7 +36,7 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    highest N in the document or on disk (`<id>-attachment-<N>` in a shared directory). Either way
    the extension follows the actual file type; never overwrite a valid file. Verify: non-empty;
    type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), else
-   detected type matches the extension (`file <path>`); images and PDFs also viewed to confirm
+   detected type matches the extension (`file '<path>'`); images and PDFs also viewed to confirm
    they are the asset given.
 6. **Write the entries.** Filling an entry: keep it, drop its not-downloaded note, fix the embed's
    extension when it changed, add the caption line below — one entry per file, never a second.
@@ -51,10 +51,10 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    ```
 
    Non-image → `[attachment-3.pdf](attachment-3.pdf) — _<description> — added by hand YYYY-MM-DD_`.
-   When a REQUIREMENTS file exists for the ticket (the document's base with `.TICKET` →
-   `.REQUIREMENTS`; for a `-vN` document that base, else the ticket's latest), also append one line
-   per asset — the same embed or link plus the caption — at the end of its **Context** part; no new
-   section, nothing else changed.
+   When the document is a ticket file and a REQUIREMENTS file exists for it (its base with
+   `.TICKET` → `.REQUIREMENTS`; for a `-vN` document that base, else the ticket's latest), also
+   append one line per asset — the same embed or link plus the caption — at the end of its
+   **Context** part; no new section, nothing else changed.
 7. **Report** project-relative paths: the document, the REQUIREMENTS file when it got a line — its
    requirements predate the asset and may need re-refining — then one line per asset with its
    caption. When the document is a ticket file with no REQUIREMENTS file yet and `/refine-ticket`
@@ -68,5 +68,5 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
   No cache or no such file → the OS clipboard, see [clipboard.md](clipboard.md). Neither works →
   ask the user to save the image and paste its path.
 - **Local path** — copy the file.
-- **URL** — `curl -fSL <url> -o <file>`; no auth flows here — on failure or a login page, ask the
-  user to download the file and paste its path.
+- **URL** — `curl -fSL '<url>' -o '<file>'`; no auth flows here — on failure or a login page, ask
+  the user to download the file and paste its path.
