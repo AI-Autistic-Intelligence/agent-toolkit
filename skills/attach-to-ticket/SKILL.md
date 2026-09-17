@@ -24,9 +24,9 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    discussed) → proceed. Otherwise guess (branch name, latest planning directory) and confirm
    before writing; nothing to guess from → ask. No planning directory for it yet → stop and point
    to fetch-ticket; don't create one.
-3. **Pick the document** — unless the user names one: the ticket file, latest `-vN` when
-   re-fetched, the `<id>-` one in a shared directory; the REQUIREMENTS file when no ticket file
-   exists. Several candidates left → ask.
+3. **Pick the document** — unless the user names one: the ticket file, latest `-vN` (file or
+   directory) when re-fetched, the `<id>-` one in a shared directory; the REQUIREMENTS file when no
+   ticket file exists. Several candidates left → ask.
 4. **Map assets to entries.** Descriptions map to assets in paste order; "image 2 is …" overrides.
    If the document has entries whose file is missing (attachments or design references, marked
    not downloaded or not), propose which asset fills which — by original filename or design name
@@ -57,15 +57,15 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    Non-image → `[attachment-3.pdf](attachment-3.pdf) — _<description> — added by hand YYYY-MM-DD_`.
    `attachment-3` stands for the saved filename, `<id>-` prefix included. When the document is a
    ticket file and a REQUIREMENTS file exists for it (its base with `.TICKET` → `.REQUIREMENTS`;
-   for a `-vN` document with none, the ticket's latest), also append one line per asset — the same
-   embed or link plus the caption — at the end of its **Context** part; no new section, nothing
-   else changed.
+   for a `-vN` re-fetch with none, the ticket's latest), also append one line per asset — the same
+   embed or link, its path relative to the REQUIREMENTS file when that sits in another directory,
+   plus the caption — at the end of its **Context** part; no new section, nothing else changed.
 7. **Report** project-relative paths: the document, the REQUIREMENTS file when it got a line — its
    requirements predate the asset and may need re-refining — then one line per asset with its
    caption. When the document is a ticket file with no REQUIREMENTS file yet and `/refine-ticket`
    is installed, hand off with one copy-pasteable launch command in the agent tool's syntax (e.g.
-   `claude --name refine-<slug> "/refine-ticket <document>"`), then the alternative, `/clear`
-   followed by `/refine-ticket <document>`.
+   `claude --name refine-<slug> "/refine-ticket <document>"`), then the alternative, the tool's
+   clear command (e.g. `/clear`) followed by `/refine-ticket <document>`.
 
 ## Sources
 
