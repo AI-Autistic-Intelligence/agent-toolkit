@@ -46,6 +46,9 @@ execute them one at a time and consolidate the changes.
 
 - **[fetch-ticket](./skills/fetch-ticket/SKILL.md)** — download a ticket from any tracker
   (e.g. GitHub, Jira, Azure DevOps) and save it as a self-contained markdown file.
+- **[attach-to-ticket](./skills/attach-to-ticket/SKILL.md)** — save a pasted screenshot, a file
+  or a URL beside a fetched ticket and reference it from the ticket file, e.g. to fill an
+  attachment the fetch could not download.
 - **[refine-ticket](./skills/refine-ticket/SKILL.md)** — define the "what" of a task: validate the
   ticket — or a raw idea you want to brainstorm — against the codebase, settle open decisions
   together, and save a self-contained requirements doc a fresh session can pick up.
@@ -219,6 +222,8 @@ Some skills and rules form a workflow or rely on each other. Hard dependencies a
 ```mermaid
 flowchart TD
   fetch_ticket["fetch-ticket"] --> refine["refine-ticket"]
+  fetch_ticket --> attach["attach-to-ticket"]
+  attach --> refine
   fetch_pr["fetch-pr-review"] --> refine_pr["refine-pr-review"]
   refine_pr --> refine
   refine_pr --> plan
@@ -265,6 +270,7 @@ flowchart TD
   compact_gov --> compact_docs
 
   plans_rule["plans-directory rule"] -. informs .-> fetch_ticket
+  plans_rule -. informs .-> attach
   plans_rule -. informs .-> fetch_pr
   plans_rule -. informs .-> refine_pr
   plans_rule -. informs .-> refine

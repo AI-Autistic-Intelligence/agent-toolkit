@@ -3,7 +3,7 @@ name: fetch-ticket
 description: Fetch one or more tickets/issues from their tracker (Azure DevOps, Jira, GitHub, …) and save each as a self-contained markdown ticket file. Fetch only — no analysis or planning.
 license: MIT
 metadata:
-  version: "1.11"
+  version: "1.12"
 ---
 
 # Ticket Fetcher
@@ -137,12 +137,13 @@ entry templates — lives in [attachments.md](attachments.md). Three rules alway
 ## Next step
 
 State clearly when done, using **project-relative paths** (never absolute): the output directory,
-the ticket file, and any attachments. If any attachment could not be downloaded, **first emit a
-clear warning** listing each missing `attachment-<N>.<ext>` and its source URL, instructing the user
-to download it and save it under that exact name so the embeds resolve. Then hand off the next
-phase as a **single copy-pasteable launch command** — session name and prompt combined, so one paste
-starts the session. Use the launch syntax of the agent tool in use (vendor-agnostic — `claude` below
-is only the example), naming the session `refine-<slug>`:
+the ticket file, and any attachments. If any attachment or design preview could not be
+downloaded, **first emit a clear warning** listing each missing file's name and its source URL,
+instructing the user to download it and save it under that exact name so the embeds resolve — or,
+with `/attach-to-ticket` installed, to paste it (or its saved path) and run that skill. Then hand
+off the next phase as a **single copy-pasteable launch command** — session name and prompt
+combined, so one paste starts the session. Use the launch syntax of the agent tool in use
+(vendor-agnostic — `claude` below is only the example), naming the session `refine-<slug>`:
 
 ```
 claude --name refine-<slug> "/refine-ticket <output-dir>/<id>-<slug>.TICKET.md"

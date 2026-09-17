@@ -49,8 +49,9 @@ _Original filename: image.png_
 [attachment-2.pdf](attachment-2.pdf) — _Original filename: design-spec.pdf_
 ```
 
-For a file that couldn't be downloaded, append its source so the user can fetch it manually: `— not
-downloaded; get it from <url> and save here as attachment-<N>.<ext>`.
+For a file that couldn't be downloaded, append its source so the user can fetch it manually:
+`— not downloaded; get it from <url> and save here as <filename>`, adding
+`, or paste it (or its saved path) and run /attach-to-ticket` when that skill is installed.
 
 ## Design references
 
@@ -58,9 +59,9 @@ For design-tool links (Figma, Zeplin, Sketch, Adobe XD, …) in the description/
 them as `attachment-<N>` — they're living references, not attached files. Capture each referenced
 frame/screen via that tool's MCP (e.g. Figma MCP `get_screenshot`), downloading the returned
 short-lived URL straight to disk as `<tool>-<id>-<slug>.png` (auth its MCP first if needed — see
-Attachments). If no MCP for that tool is connected, still record the entry with its name and source
-URL and add it to the warn list — same as an undownloaded attachment. Record one entry per link,
-with the local preview plus the identifiers needed to re-open it in that tool:
+Attachments). If no MCP for that tool is connected, still record the entry, its embed pointing at
+the expected file (still missing), with the not-downloaded note, and add it to the warn list.
+Record one entry per link, with the preview plus the identifiers needed to re-open it in that tool:
 
 ```markdown
 ### <design name>
