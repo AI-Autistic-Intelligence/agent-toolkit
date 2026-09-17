@@ -33,12 +33,13 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    image shows — and confirm, unless the user's text already says. An asset with no description →
    ask what it shows, recommending a caption read off the image; never write one silently.
 5. **Save to disk** — see Sources; never route bytes through the model (output caps truncate base64
-   silently). Filling an entry → its filename when that is a bare name (no `/`, `\`, `..`) and not
-   a symlink, else ask; else the next `attachment-<N>.<ext>` after the highest N in the document or
-   on disk (`<id>-attachment-<N>` in a shared directory). Either way the extension follows the
-   actual file type; never overwrite a valid file. Verify: non-empty; type trailer present where
-   the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`), else detected type matches the
-   extension (`file '<path>'`); images and PDFs also viewed to confirm they are the asset given.
+   silently). Filling an entry → its filename when that is a bare name (no `/`, `\`, `..`), else
+   ask; else the next `attachment-<N>.<ext>` after the highest N in the document or on disk
+   (`<id>-attachment-<N>` in a shared directory). Either way the extension follows the actual file
+   type; a symlink at the target, dangling included → ask; never overwrite a valid file. Verify:
+   non-empty; type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`),
+   else detected type matches the extension (`file '<path>'`); images and PDFs also viewed to
+   confirm they are the asset given.
 6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, add the embed or
    link when missing, else fix its extension when it changed, add the caption line below — one
    entry per file, never a second.
