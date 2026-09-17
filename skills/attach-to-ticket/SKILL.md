@@ -40,9 +40,9 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    non-empty; type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`),
    else detected type matches the extension (`file '<path>'`); images and PDFs also viewed to
    confirm they are the asset given.
-6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, add the embed or
-   link when missing, else fix its extension when it changed, add the caption line below — one
-   entry per file, never a second.
+6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, add or rewrite
+   its reference to match the saved file (image → embed, else link; its extension), add the
+   caption line below — one entry per file, never a second.
    Else append to `## Attachments` (create it when missing — last, or before
    `## Design references`):
 

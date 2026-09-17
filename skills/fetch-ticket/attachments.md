@@ -59,9 +59,9 @@ For design-tool links (Figma, Zeplin, Sketch, Adobe XD, …) in the description/
 them as `attachment-<N>` — they're living references, not attached files. Capture each referenced
 frame/screen via that tool's MCP (e.g. Figma MCP `get_screenshot`), downloading the returned
 short-lived URL straight to disk as `<tool>-<id>-<slug>.png` (auth its MCP first if needed — see
-Attachments). If no MCP for that tool is connected, still record the entry, preview embed included,
-with the not-downloaded note, and add it to the warn list. Record one entry per link, with the local
-preview plus the identifiers needed to re-open it in that tool:
+Attachments). If no MCP for that tool is connected, still record the entry, its embed pointing at
+the expected file (still missing), with the not-downloaded note, and add it to the warn list.
+Record one entry per link, with the preview plus the identifiers needed to re-open it in that tool:
 
 ```markdown
 ### <design name>
