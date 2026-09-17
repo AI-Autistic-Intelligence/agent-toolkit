@@ -29,16 +29,17 @@ documents beyond the entries below and the REQUIREMENTS line of step 6.
    exists. Several candidates left → ask.
 4. **Map assets to entries.** Descriptions map to assets in paste order; "image 2 is …" overrides.
    If the document has entries whose file is missing (attachments or design references, marked
-   not downloaded or not), propose which asset fills which — by original filename and what the
-   image shows — and confirm, unless the user's text already says. An asset with no description →
-   ask what it shows, recommending a caption read off the image; never write one silently.
+   not downloaded or not), propose which asset fills which — by original filename or design name
+   and what the image shows — and confirm, unless the user's text already says. An asset with no
+   description → ask what it shows, recommending a caption read off the image; never write one
+   silently.
 5. **Save to disk** — see Sources; never route bytes through the model (output caps truncate base64
    silently). Filling an entry → its filename when that is a bare name (no `/`, `\`, `..`), else
    ask; else the next `attachment-<N>.<ext>` after the highest N in the document or on disk
    (`<id>-attachment-<N>` in a shared directory). Either way the extension follows the actual file
    type; a symlink at the target, dangling included → ask; never overwrite a valid file. Verify:
    non-empty; type trailer present where the format has one (PNG `IEND`, JPEG `FFD9`, PDF `%%EOF`),
-   else detected type matches the extension (`file '<path>'`); images and PDFs also viewed to
+   else detected type matches the extension (e.g. `file '<path>'`); images and PDFs also viewed to
    confirm they are the asset given.
 6. **Write the entries.** Filling an entry: keep it, drop any not-downloaded note, add or rewrite
    its reference to match the saved file (image → embed, else link; its extension), add the
@@ -76,6 +77,6 @@ escape again for a nested language (AppleScript, PowerShell).
   No cache or no such file → the OS clipboard, see [clipboard.md](clipboard.md). Neither works →
   ask the user to save the image and paste its path.
 - **Local path** — copy the file.
-- **URL** — HTTP(S) only, redirects included:
-  `curl -fSL --proto '=http,https' --proto-redir '=http,https' '<url>' -o '<file>'`; no auth
+- **URL** — HTTP(S) only, redirects included (`curl.exe` on Windows):
+  `curl -fSL --proto '=http,https' --proto-redir '=http,https' -o '<file>' -- '<url>'`; no auth
   flows here — on failure or a login page, ask the user to download the file and paste its path.
