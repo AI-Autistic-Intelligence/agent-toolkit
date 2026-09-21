@@ -49,7 +49,7 @@
           "requires": ["skills/refine-ticket", "skills/use-conversational-language"]
         },
         "review-code-assistant": {
-          "requires": ["skills/use-conversational-language"]
+          "requires": ["skills/use-conversational-language", "skills/explain-in-simple-language"]
         },
         "maintainer-review": {
           "requires": [

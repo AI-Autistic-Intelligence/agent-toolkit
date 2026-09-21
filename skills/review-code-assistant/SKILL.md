@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "1.11"
+  version: "1.12"
 ---
 
 # Review code assistant
@@ -129,20 +129,27 @@ on lines the PR did not touch.
 
 Local text only; write no file unless the user later asks to save it.
 
+Before writing anything addressed to the user — questions included, a **Suggested comment**
+excepted — actually invoke **/explain-in-simple-language** and follow it — reciting its rules from
+memory does not count. Not installed: plain words, one idea per sentence, a short TLDR opening a
+long text, and no "here" or "this call" standing in for something the user hasn't seen.
+
 - Lead with one short sentence recapping what the PR does, to show the change was understood.
 - Then the comment list, or a one-line `Looks good, no comments.`
-- Say plainly what you verified and what you could not (e.g. behaviour only testable at runtime).
+- Say plainly what you verified and what you could not (e.g. behaviour only testable at runtime),
+  inside the finding when it concerns only that one.
 - Each item: a `###` heading holding its sequential finding number and the clickable `path:line`,
   the explanation beneath it, then the optional suggested comment. Put a full-width heavy rule (a
   row of ~40 `━`) above each finding and one more after the last, so the list is bracketed top and
-  bottom and the eye can jump between comments. For example:
+  bottom and the eye can jump between comments. One issue per finding: an unrelated second point
+  on the same lines gets its own. For example:
 
   ````
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   ### 1 · `path/to/file.ext:42`
 
-  Brief explanation in a sentence or two.
+  Explanation.
 
   Suggested comment:
 
@@ -154,20 +161,44 @@ Local text only; write no file unless the user later asks to save it.
 
   ### 2 · `path/to/other.ext:88`
 
-  Brief explanation, suggested comment, …
+  Explanation, suggested comment, …
 
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ````
 
-  The explanation is your note to the user and can be direct. Add **Suggested comment** only when it
-  adds something beyond the explanation (nuance, or softer phrasing); if it would just restate the
-  explanation, give one or the other, never both near-identical. When the fix is itself a snippet —
-  most often an explanatory code comment — the suggested comment can be that snippet, ready to
-  paste, rather than prose asking the author to write it. Give each **Suggested comment** as a
-  fenced block holding exactly what gets pasted, never a blockquote (`>` prefixes travel with the
-  copy); when the comment holds a fence, make the outer one longer, never indent or escape the
-  inner fence. Before writing any **Suggested comment**, actually invoke
-  **/use-conversational-language** and follow it — reciting its rules from memory does not count.
+  **The explanation** is your note to the user and can be direct. The user must be able to judge
+  the finding from it without opening the code. It holds:
+
+  - **Where, by name** — the files, services and values involved. When the PR has several similar
+    places, say which ones the finding covers and which it doesn't.
+  - **Expected next to actual** — what the ticket, rule or correct behaviour requires, beside what
+    the code does. Quote the ticket or rule, never paraphrase it.
+  - **The consequence** — what goes wrong and for whom, or that nothing breaks and it is only a
+    cleanup. With no severity labels, this is how the user weighs the finding.
+  - **The tool behaviour it rests on**, in a sentence or two, when the finding holds only because
+    of how a specific tool or subsystem behaves (how a mock server picks a mapping, which
+    environments run a seed step). A judgement call: skip what any developer on the project knows.
+  - **The fix as code**, current next to replacement, when it is a few lines you are certain of
+    and no suggestion block (below) already carries it.
+
+  Length follows the finding: a stray debug print takes one sentence, and nothing goes in that the
+  user doesn't need to judge it. A long explanation opens with a TLDR; the output as a whole gets
+  none, the recap is its opening. Use a table or an expected/actual code pair where it shows a
+  difference or a data flow more clearly than prose.
+
+  Add **Suggested comment** only when it adds something beyond the explanation (nuance, or softer
+  phrasing); if it would just restate the explanation, give one or the other, never both
+  near-identical. It makes one point: for a mismatch, what the ticket or rule says, what the code
+  does, then the question. When the fix is itself a snippet — most often an explanatory code comment
+  — the suggested comment can be that snippet, ready to paste, rather than prose asking the author
+  to write it; where a human reviewer would realistically post the platform's one-click suggestion
+  block (the PR's platform has them, the replacement is small and certain), give that block, its
+  label above the fence naming the exact lines to anchor it on
+  (`Suggested comment, on lines 40-44:`). Give each **Suggested comment** as a fenced block holding
+  exactly what gets pasted, never a blockquote (`>` prefixes travel with the copy); when the comment
+  holds a fence, make the outer one longer, never indent or escape the inner fence. Before writing
+  any **Suggested comment**, actually invoke **/use-conversational-language** and follow it —
+  reciting its rules from memory does not count.
   Not installed: write plain prose instead, no dashes and no AI tells.
   That brevity and softness is tone, not hedging: it never lowers the evidence bar from *Grounded,
   not speculative* — stay grounded in *what* to raise, human and brief in *how* you word it.

@@ -5,7 +5,7 @@ disable-model-invocation: true
 type: flow
 license: MIT
 metadata:
-  version: "0.12"
+  version: "0.13"
 ---
 
 # Self-review
@@ -133,7 +133,7 @@ ticket or comment text drafted in the session and the finding listed at Wrap up 
 fix that would reshape the change (a redesign, scope beyond the finding) still asks. Later rounds
 start at once on the working tree, the commit proposal moving to Wrap up; asks before the walk
 (target, intent) stand. The report gains a procedural caveat naming where it began
-(`Dispositions auto-accepted from round 1, finding 3`).
+(`Dispositions decided by the agent from round 1, finding 3`).
 
 Done when every finding of the round is dispositioned and diff and metadata re-hashed as in steps
 3 and 4.
@@ -263,8 +263,15 @@ the PR — unless the project rules file says otherwise; a reminder to run the p
 checks (build, lint, tests) before pushing — this skill never runs them; and that the pushed head
 must match the reported SHA: unpinned → commit, then re-invoke to stamp; any later commit or
 metadata edit → the same re-invocation: a stamp when the content held, its changed metadata
-reviewed alone, else a re-run; after autoaccept, also the commit proposal (Rounds) and the
-auto-deferred findings to file. Done when all are printed.
+reviewed alone, else a re-run; after autoaccept, also the commit proposal (Rounds) and, first of
+all, the findings as one bullet per disposition, empty ones omitted — each finding in a few words
+with its number and the why, a deferred one also with what to file:
+
+- Fixed (<count>): …
+- Deferred (<count>): …
+- Dismissed (<count>): …
+
+Done when all are printed.
 
 ## Boundaries
 
