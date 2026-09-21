@@ -229,6 +229,7 @@ flowchart TD
   refine_pr --> plan
   refine_pr --> express["use-conversational-language"]
   review_code["review-code-assistant"] --> express
+  review_code --> simple["explain-in-simple-language"]
   self_review["self-review"] --> fresh_eyes["fresh-eyes-review"]
   maintainer_review["maintainer-review"] --> review_code
   maintainer_review --> fresh_eyes
