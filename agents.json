@@ -1,0 +1,14 @@
+{
+  "agents": {
+    "claude": {
+      "skills_dir": "~/.claude/skills",
+      "rules_dir": "~/.claude/rules",
+      "auto_update": true
+    },
+    "antigravity": {
+      "skills_dir": "~/.gemini/config/skills",
+      "rules_dir": "~/.gemini/config/rules",
+      "auto_update": false
+    }
+  }
+}

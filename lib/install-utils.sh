@@ -836,3 +836,47 @@ finish_auto_update() {
   esac
   return 0
 }
+
+# ---------------------------------------------------------------------------
+# Multi-Agent Configuration
+# ---------------------------------------------------------------------------
+
+get_configured_agents() {
+  local cfg="${REPO_DIR}/agents.json"
+  [ -f "$cfg" ] || return 0
+  if python3_usable; then
+    python3 -c 'import json, sys; print("\n".join(json.load(open(sys.argv[1]))["agents"].keys()))' "$cfg" 2>/dev/null
+  elif node -e '' >/dev/null 2>&1; then
+    node -e 'console.log(Object.keys(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).agents).join("\n"))' "$cfg" 2>/dev/null
+  elif command -v jq >/dev/null 2>&1; then
+    jq -r '.agents | keys[]' "$cfg" 2>/dev/null
+  fi
+}
+
+get_agent_config_val() {
+  local cfg="${REPO_DIR}/agents.json"
+  local agent="$1" key="$2"
+  [ -f "$cfg" ] || return 0
+  if python3_usable; then
+    python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["agents"].get(sys.argv[2], {}).get(sys.argv[3], ""))' "$cfg" "$agent" "$key" 2>/dev/null
+  elif node -e '' >/dev/null 2>&1; then
+    node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).agents[process.argv[2]]?.[process.argv[3]] ?? "")' "$cfg" "$agent" "$key" 2>/dev/null
+  elif command -v jq >/dev/null 2>&1; then
+    jq -r ".agents[\"$agent\"][\"$key\"] // empty" "$cfg" 2>/dev/null
+  fi
+}
+
+expand_path() {
+  local path="$1"
+  if [[ "$path" == "~/"* ]]; then
+    path="${HOME}/${path:2}"
+  elif [ "$path" = "~" ]; then
+    path="${HOME}"
+  fi
+  
+  if [ "$WINDOWS" -eq 1 ] && command -v cygpath >/dev/null 2>&1; then
+    path="$(cygpath -u "$path" 2>/dev/null || echo "$path")"
+  fi
+  
+  printf '%s' "$path"
+}

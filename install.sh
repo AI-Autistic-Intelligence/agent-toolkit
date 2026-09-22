@@ -48,7 +48,8 @@ REPO_DIR_LOGICAL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${REPO_DIR}/lib/install-utils.sh"
 
 AGENTS_DIR="${HOME}/.agents"
-SKILLS_DIR="${HOME}/.claude/skills"
+CUSTOM_SKILLS_DIR=""
+AGENT_LIST=()
 FORCE=0
 AUTO_UPDATE=""
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
@@ -82,7 +83,9 @@ Usage:
 
 Options:
   --agents-dir DIR   Agent-neutral directory   (default: ~/.agents)
-  --skills-dir DIR   Agent's skills directory  (default: ~/.claude/skills)
+  --skills-dir DIR   Specific skills directory (overrides agents.json)
+  --agent NAME       Install for specific agent from agents.json
+  --all-agents       Install for all configured agents (default behavior)
   --force            Overwrite real files/dirs and foreign symlinks
   --exclude NAME     Skip this skill and remove our link to it (persists)
   --include NAME     Install it again after --exclude
@@ -114,7 +117,9 @@ require_skill_name() {
 while [ $# -gt 0 ]; do
   case "$1" in
     --agents-dir) AGENTS_DIR="$2"; shift 2 ;;
-    --skills-dir) SKILLS_DIR="$2"; shift 2 ;;
+    --skills-dir) CUSTOM_SKILLS_DIR="$2"; shift 2 ;;
+    --agent) AGENT_LIST+=("$2"); shift 2 ;;
+    --all-agents) AGENT_LIST=(); shift ;;
     # Deprecated no-op: this script installs skills only.
     --skills-only) shift ;;
     --rules-only|--rules-dir)
@@ -159,38 +164,63 @@ done
 end_phase
 
 # Phase 2: populate the agent's dir with links to the agent-neutral entries.
-# Skipped entirely when the agent dir IS the agent-neutral dir: linking a dir
-# onto itself would turn every entry into a self-referential symlink.
-# Entries phase 1 could not provide (e.g. a foreign broken symlink holding the
-# name) are skipped too, so no dangling chain links are created.
-echo "Skills -> ${SKILLS_DIR}"
-mkdir -p "$SKILLS_DIR"
-TARGET_DIR="$(cd "$SKILLS_DIR" && pwd -P)"
-if [ "$TARGET_DIR" = "${AGENTS_DIR}/skills" ]; then
-  echo "  ok     (this is the agents dir itself; already populated)"
-else
-  # Excluded entries go first: phase 1 removed what they point at, so leaving
-  # them to prune_dir would report them as pruned rather than as excluded.
-  for skill in "${REPO_DIR}"/skills/*/; do
-    [ -d "$skill" ] || continue
-    is_excluded "$(basename "${skill%/}")" || continue
-    unlink_one "$(basename "${skill%/}")" "$SKILLS_DIR"
-  done
-  prune_dir "$SKILLS_DIR"
-  begin_phase
-  for skill in "${REPO_DIR}"/skills/*/; do
-    [ -d "$skill" ] || continue
-    is_excluded "$(basename "${skill%/}")" && continue
-    src="${AGENTS_DIR}/skills/$(basename "${skill%/}")"
-    if [ ! -e "$src" ]; then
-      count_skip
-      echo "  skip   $(basename "${skill%/}") (no usable entry in agents dir)"
-      continue
+TARGETS=()
+
+if [ -n "$CUSTOM_SKILLS_DIR" ]; then
+  TARGETS+=("$CUSTOM_SKILLS_DIR")
+elif [ "${#AGENT_LIST[@]}" -gt 0 ]; then
+  for agent in "${AGENT_LIST[@]}"; do
+    agent_dir="$(get_agent_config_val "$agent" "skills_dir")"
+    if [ -n "$agent_dir" ]; then
+      TARGETS+=("$(expand_path "$agent_dir")")
+    else
+      echo "Warning: Agent '$agent' not found in agents.json or has no skills_dir." >&2
     fi
-    link_one "$src" "$SKILLS_DIR"
   done
-  end_phase
+else
+  agents="$(get_configured_agents)"
+  if [ -n "$agents" ]; then
+    while IFS= read -r agent; do
+      [ -n "$agent" ] || continue
+      agent_dir="$(get_agent_config_val "$agent" "skills_dir")"
+      [ -n "$agent_dir" ] && TARGETS+=("$(expand_path "$agent_dir")")
+    done <<< "$agents"
+  else
+    TARGETS+=("${HOME}/.claude/skills")
+  fi
 fi
+
+for SKILLS_DIR in "${TARGETS[@]}"; do
+  echo "Skills -> ${SKILLS_DIR}"
+  mkdir -p "$SKILLS_DIR"
+  TARGET_DIR="$(cd "$SKILLS_DIR" && pwd -P)"
+  if [ "$TARGET_DIR" = "${AGENTS_DIR}/skills" ]; then
+    echo "  ok     (this is the agents dir itself; already populated)"
+  else
+    # Excluded entries go first: phase 1 removed what they point at, so leaving
+    # them to prune_dir would report them as pruned rather than as excluded.
+    for skill in "${REPO_DIR}"/skills/*/; do
+      [ -d "$skill" ] || continue
+      is_excluded "$(basename "${skill%/}")" || continue
+      unlink_one "$(basename "${skill%/}")" "$SKILLS_DIR"
+    done
+    prune_dir "$SKILLS_DIR"
+    begin_phase
+    for skill in "${REPO_DIR}"/skills/*/; do
+      [ -d "$skill" ] || continue
+      is_excluded "$(basename "${skill%/}")" && continue
+      src="${AGENTS_DIR}/skills/$(basename "${skill%/}")"
+      if [ ! -e "$src" ]; then
+        count_skip
+        echo "  skip   $(basename "${skill%/}") (no usable entry in agents dir)"
+        continue
+      fi
+      link_one "$src" "$SKILLS_DIR"
+    done
+    end_phase
+  fi
+  finish_auto_update
+done
 
 # Rule links from earlier installs are managed by the opt-in installer; leave
 # them untouched and point the user there. Read-only check on purpose.
@@ -203,6 +233,5 @@ if [ -d "${AGENTS_DIR}/rules" ]; then
 fi
 
 report_install_health
-finish_auto_update
 
 echo "Done."

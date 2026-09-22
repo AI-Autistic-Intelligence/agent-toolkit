@@ -42,7 +42,8 @@ REPO_DIR_LOGICAL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${REPO_DIR}/lib/install-utils.sh"
 
 AGENTS_DIR="${HOME}/.agents"
-RULES_DIR="${HOME}/.claude/rules"
+CUSTOM_RULES_DIR=""
+AGENT_LIST=()
 FORCE=0
 AUTO_UPDATE=""
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
@@ -75,7 +76,9 @@ Usage:
 
 Options:
   --agents-dir DIR   Agent-neutral directory   (default: ~/.agents)
-  --rules-dir DIR    Agent's rules directory   (default: ~/.claude/rules)
+  --rules-dir DIR    Specific rules directory (overrides agents.json)
+  --agent NAME       Install for specific agent from agents.json
+  --all-agents       Install for all configured agents (default behavior)
   --force            Overwrite real files/dirs and foreign symlinks
   --no-auto-update   Do not register the daily self-update hook (persists)
   --auto-update      Register it again after --no-auto-update
@@ -90,7 +93,9 @@ EOF
 while [ $# -gt 0 ]; do
   case "$1" in
     --agents-dir) AGENTS_DIR="$2"; shift 2 ;;
-    --rules-dir)  RULES_DIR="$2"; shift 2 ;;
+    --rules-dir)  CUSTOM_RULES_DIR="$2"; shift 2 ;;
+    --agent) AGENT_LIST+=("$2"); shift 2 ;;
+    --all-agents) AGENT_LIST=(); shift ;;
     --force) FORCE=1; shift ;;
     --no-auto-update) AUTO_UPDATE=off; shift ;;
     --auto-update) AUTO_UPDATE=on; shift ;;
@@ -115,32 +120,55 @@ done
 end_phase
 
 # Phase 2: populate the agent's dir with links to the agent-neutral entries.
-# Skipped entirely when the agent dir IS the agent-neutral dir: linking a dir
-# onto itself would turn every entry into a self-referential symlink.
-# Entries phase 1 could not provide (e.g. a foreign broken symlink holding the
-# name) are skipped too, so no dangling chain links are created.
-echo "Rules -> ${RULES_DIR}"
-mkdir -p "$RULES_DIR"
-TARGET_DIR="$(cd "$RULES_DIR" && pwd -P)"
-if [ "$TARGET_DIR" = "${AGENTS_DIR}/rules" ]; then
-  echo "  ok     (this is the agents dir itself; already populated)"
-else
-  prune_dir "$RULES_DIR"
-  begin_phase
-  for rule in "${REPO_DIR}"/rules/*.md; do
-    [ -e "$rule" ] || continue
-    src="${AGENTS_DIR}/rules/$(basename "$rule")"
-    if [ ! -e "$src" ]; then
-      count_skip
-      echo "  skip   $(basename "$rule") (no usable entry in agents dir)"
-      continue
+TARGETS=()
+
+if [ -n "$CUSTOM_RULES_DIR" ]; then
+  TARGETS+=("$CUSTOM_RULES_DIR")
+elif [ "${#AGENT_LIST[@]}" -gt 0 ]; then
+  for agent in "${AGENT_LIST[@]}"; do
+    agent_dir="$(get_agent_config_val "$agent" "rules_dir")"
+    if [ -n "$agent_dir" ]; then
+      TARGETS+=("$(expand_path "$agent_dir")")
+    else
+      echo "Warning: Agent '$agent' not found in agents.json or has no rules_dir." >&2
     fi
-    link_one "$src" "$RULES_DIR"
   done
-  end_phase
+else
+  agents="$(get_configured_agents)"
+  if [ -n "$agents" ]; then
+    while IFS= read -r agent; do
+      [ -n "$agent" ] || continue
+      agent_dir="$(get_agent_config_val "$agent" "rules_dir")"
+      [ -n "$agent_dir" ] && TARGETS+=("$(expand_path "$agent_dir")")
+    done <<< "$agents"
+  else
+    TARGETS+=("${HOME}/.claude/rules")
+  fi
 fi
 
-report_install_health
-finish_auto_update
+for RULES_DIR in "${TARGETS[@]}"; do
+  echo "Rules -> ${RULES_DIR}"
+  mkdir -p "$RULES_DIR"
+  TARGET_DIR="$(cd "$RULES_DIR" && pwd -P)"
+  if [ "$TARGET_DIR" = "${AGENTS_DIR}/rules" ]; then
+    echo "  ok     (this is the agents dir itself; already populated)"
+  else
+    prune_dir "$RULES_DIR"
+    begin_phase
+    for rule in "${REPO_DIR}"/rules/*.md; do
+      [ -e "$rule" ] || continue
+      src="${AGENTS_DIR}/rules/$(basename "$rule")"
+      if [ ! -e "$src" ]; then
+        count_skip
+        echo "  skip   $(basename "$rule") (no usable entry in agents dir)"
+        continue
+      fi
+      link_one "$src" "$RULES_DIR"
+    done
+    end_phase
+  fi
+  finish_auto_update
+done
 
+report_install_health
 echo "Done."
